@@ -11,3 +11,6 @@
 2.	mkdir .vim
 3.	ln -s ~/setting/vimrc ~/.vimrc	
 4.	git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
+5.	cd ~/.vim/bundle/YouCompleteMe
+	./install.sh --clang-completer
+
