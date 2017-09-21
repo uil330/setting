@@ -17,6 +17,7 @@ Plugin 'taglist.vim'
 Plugin 'mileszs/ack.vim'
 Plugin 'kshenoy/vim-signature'
 Plugin 'rking/ag.vim'
+Plugin 'scrooloose/syntastic'
 call vundle#end()            " required
 filetype plugin indent on    " required
 
@@ -68,4 +69,17 @@ map <leader>bdo :BcloseOthers<cr>
 set clipboard=unnamed
 
 
-"let g:ackprg = 'ag --nogroup --nocolor --column'
+"Syntastic setting
+" 设置错误符号
+let g:syntastic_error_symbol='✗'
+" 设置警告符号
+let g:syntastic_warning_symbol='⚠'
+" 是否在打开文件时检查
+let g:syntastic_check_on_open=0
+" 是否在保存文件后检查
+let g:syntastic_check_on_wq=1
+
+nnoremap gl :YcmCompleter GoToDeclaration <cr>
+nnoremap gf :YcmCompleter GoToDefinition <cr>
+nnoremap gg :YcmCompleter GoToDefinitionElseDeclaration <cr>
+"g:ackprg = 'ag --nogroup --nocolor --column'
