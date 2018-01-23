@@ -87,6 +87,7 @@ nnoremap gf :YcmCompleter GoToDefinition <cr>
 "nnoremap gg :YcmCompleter GoToDefinitionElseDeclaration <cr>
 "g:ackprg = 'ag --nogroup --nocolor --column'
 
+autocmd FileType python set expandtab
 "
 "我们希望在新建c文件时，自动在文件头部加入一些代码，比如预处理命令，和编码设置，可以将以下配置放到/etc/vimrc或者 ~/.vimrc 文件底部，然后退出vim在进入vim即可生效。<br>"新建.c,.h,.sh,.java文件，自动插入文件头
 autocmd BufNewFile *.[ch],*.py exec ":call SetTitle()"
