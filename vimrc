@@ -94,7 +94,13 @@ autocmd BufNewFile *.[ch],*.py exec ":call SetTitle()"
 """定义函数SetTitle，自动插入文件头
 func SetTitle()
 if &filetype == 'python'
-	call setline(1, "'''*************************************************************************")
+	call setline(1, "#!/usr/bin/env python")
+	normal o
+	call setline(2, "# -*- coding: utf-8 -*-")
+	normal o
+	call setline(3, "")
+	normal o
+	call setline(4, "'''*************************************************************************")
 else
 	call setline(1, "/*************************************************************************")
 endif
@@ -131,11 +137,6 @@ else
 	call append(line(".")+26,"*************************************************************************/")
 endif
 call append(line(".")+27, "")
-if &filetype == 'python'
-	call append(line(".")+28, "#!/usr/bin/env python")
-	call append(line(".")+29, "# -*- coding: utf-8 -*-")
-	call append(line(".")+30, "")
-endif
 if &filetype == "h"
 	call append(line(".")+28, "#ifndef")
 	call append(line(".")+29, "#define")
