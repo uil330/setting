@@ -1,30 +1,31 @@
 set nocompatible              " be iMproved, required
 filetype off                  " required
 
-set rtp+=~/.vim/bundle/vundle
-call vundle#begin()
-Plugin 'VundleVim/Vundle.vim'
-Plugin 'Raimondi/delimitMate'
-Plugin 'Valloric/YouCompleteMe'
-Plugin 'scrooloose/nerdtree'
-Plugin 'Xuyuanp/nerdtree-git-plugin'
-Plugin 'vim-scripts/indentpython.vim'
-Plugin 'kien/ctrlp.vim'
-Plugin 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
-Plugin 'taglist.vim'
-Plugin 'mileszs/ack.vim'
-Plugin 'kshenoy/vim-signature'
-Plugin 'rking/ag.vim'
+call plug#begin('~/.vim/plugged')
+"Plug 'VundleVim/Vundle.vim'
+Plug 'Raimondi/delimitMate'
+Plug 'Valloric/YouCompleteMe'
+Plug 'scrooloose/nerdtree'
+Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'vim-scripts/indentpython.vim', { 'for': 'python' }
+Plug 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
+Plug 'mileszs/ack.vim'
+Plug 'kshenoy/vim-signature'
+Plug 'rking/ag.vim'
 "太久了所以换成linter
-"Plugin 'scrooloose/syntastic'
-Plugin 'DoxygenToolkit.vim'
+"Plug 'scrooloose/syntastic'
+Plug 'vim-scripts/DoxygenToolkit.vim'
 " 自动调用tags
-Plugin 'ludovicchabant/vim-gutentags'
+Plug 'ludovicchabant/vim-gutentags'
 " 错误检测
-Plugin 'w0rp/ale'
+Plug 'w0rp/ale'
 " 函数列表 alt+p
-Plugin 'Yggdroot/LeaderF'
-call vundle#end()            " required
+Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
+Plug 'vim-scripts/a.vim'
+"异步编译运行
+Plug 'skywind3000/asyncrun.vim'
+Plug 'mhinz/vim-signify'
+call plug#end()            " required
 filetype plugin indent on    " required
 
 let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/c/ycm/ycm.c.py'
@@ -54,10 +55,10 @@ au BufNewFile,BufRead *.py
 set hlsearch
 set backspace=indent,eol,start
 
-let Tlist_Use_Right_Window = 1         "在右侧窗口中显示taglist窗口 "
-let Tlist_Show_One_File = 1            "不同时显示多个文件的tag，只显示当前文件的"
-let Tlist_Ctags_Cmd='/usr/local/bin/ctags'
-set tags=tags;/
+"let Tlist_Use_Right_Window = 1         "在右侧窗口中显示taglist窗口 "
+"let Tlist_Show_One_File = 1            "不同时显示多个文件的tag，只显示当前文件的"
+"let Tlist_Ctags_Cmd='/usr/local/bin/ctags'
+"set tags=tags;/
 
 command! BcloseOthers call <SID>BufCloseOthers()  
 function! <SID>BufCloseOthers()  
@@ -91,7 +92,7 @@ nnoremap gf :YcmCompleter GoToDefinition <cr>
 "nnoremap gg :YcmCompleter GoToDefinitionElseDeclaration <cr>
 "g:ackprg = 'ag --nogroup --nocolor --column'
 
-autocmd FileType python set expandtab
+"autocmd FileType python set expandtab
 "
 "我们希望在新建c文件时，自动在文件头部加入一些代码，比如预处理命令，和编码设置，可以将以下配置放到/etc/vimrc或者 ~/.vimrc 文件底部，然后退出vim在进入vim即可生效。<br>"新建.c,.h,.sh,.java文件，自动插入文件头
 autocmd BufNewFile *.[ch],*.py exec ":call SetTitle()"
@@ -202,3 +203,42 @@ let g:ale_cpp_gcc_options = '-Wall -O2 -std=c++14'
 "hi! SpellCap gui=undercurl guisp=blue
 "hi! SpellRare gui=undercurl guisp=magenta
 "ale的设定
+
+" asyncrun 设定
+let g:asyncrun_rootmarks = ['.svn', '.git', '.root', '_darcs', 'build.xml']
+nnoremap  <F4> :AsyncRun -cwd="$(VIM_ROOT)/build" cmake "$(VIM_ROOT)" <cr>
+nnoremap  <F7> :AsyncRun -cwd="$(VIM_ROOT)/build" make <cr>
+" 自动打开 quickfix window ，高度为 6
+let g:asyncrun_open = 6
+" 任务结束时候响铃提醒
+let g:asyncrun_bell = 1
+" 设置 F10 打开/关闭 Quickfix 窗口
+nnoremap <F10> :call asyncrun#quickfix_toggle(6)<cr>
+" asyncrunderf 设定
+
+" leaderf
+let g:Lf_ShortcutF = '<c-p>'
+let g:Lf_ShortcutB = '<m-n>'
+noremap <c-n> :LeaderfMru<cr>
+noremap <m-p> :LeaderfFunction!<cr>
+noremap <m-n> :LeaderfBuffer<cr>
+noremap <m-m> :LeaderfTag<cr>
+let g:Lf_StlSeparator = { 'left': '', 'right': '', 'font': '' }
+
+let g:Lf_RootMarkers = ['.project', '.root', '.svn', '.git']
+let g:Lf_WorkingDirectoryMode = 'Ac'
+let g:Lf_WindowHeight = 0.30
+let g:Lf_CacheDirectory = expand('~/.vim/cache')
+let g:Lf_ShowRelativePath = 0
+let g:Lf_HideHelp = 1
+let g:Lf_StlColorscheme = 'powerline'
+let g:Lf_PreviewResult = {'Function':0}
+
+let g:Lf_NormalMap = {
+	\ "File":   [["<ESC>", ':exec g:Lf_py "fileExplManager.quit()"<CR>']],
+	\ "Buffer": [["<ESC>", ':exec g:Lf_py "bufExplManager.quit()"<CR>']],
+	\ "Mru":    [["<ESC>", ':exec g:Lf_py "mruExplManager.quit()"<CR>']],
+	\ "Tag":    [["<ESC>", ':exec g:Lf_py "tagExplManager.quit()"<CR>']],
+	\ "Function":    [["<ESC>", ':exec g:Lf_py "functionExplManager.quit()"<CR>']],
+	\ "Colorscheme":    [["<ESC>", ':exec g:Lf_py "colorschemeExplManager.quit()"<CR>']],
+	\ }
