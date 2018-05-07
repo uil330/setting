@@ -3,9 +3,7 @@ filetype off                  " required
 
 set rtp+=~/.vim/bundle/vundle
 call vundle#begin()
-
 Plugin 'VundleVim/Vundle.vim'
-
 Plugin 'Raimondi/delimitMate'
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'scrooloose/nerdtree'
@@ -17,8 +15,15 @@ Plugin 'taglist.vim'
 Plugin 'mileszs/ack.vim'
 Plugin 'kshenoy/vim-signature'
 Plugin 'rking/ag.vim'
-Plugin 'scrooloose/syntastic'
+"太久了所以换成linter
+"Plugin 'scrooloose/syntastic'
 Plugin 'DoxygenToolkit.vim'
+" 自动调用tags
+Plugin 'ludovicchabant/vim-gutentags'
+" 错误检测
+Plugin 'w0rp/ale'
+" 函数列表 alt+p
+Plugin 'Yggdroot/LeaderF'
 call vundle#end()            " required
 filetype plugin indent on    " required
 
@@ -70,17 +75,16 @@ map <leader>bdo :BcloseOthers<cr>
 set clipboard=unnamed
 
 
-"Syntastic setting
-" 设置错误符号
-let g:syntastic_error_symbol='✗'
-" 设置警告符号
-let g:syntastic_warning_symbol='⚠'
-" 是否在打开文件时检查
-let g:syntastic_check_on_open=0
-" 是否在保存文件后检查
-let g:syntastic_check_on_wq=1
-
-let g:c_syntax_for_h = 1
+""Syntastic setting
+"" 设置错误符号
+"let g:syntastic_error_symbol='✗'
+"" 设置警告符号
+"let g:syntastic_warning_symbol='⚠'
+"" 是否在打开文件时检查
+"let g:syntastic_check_on_open=0
+"" 是否在保存文件后检查
+"let g:syntastic_check_on_wq=1
+"let g:c_syntax_for_h = 1
 
 nnoremap gl :YcmCompleter GoToDeclaration <cr>
 nnoremap gf :YcmCompleter GoToDefinition <cr>
@@ -145,3 +149,56 @@ endif
 "新建文件后，自动定位到文件末尾
 autocmd BufNewFile * normal G
 endfunc
+
+
+"gutentags的设定
+set tags=./.tags;,.tags
+" gutentags 搜索工程目录的标志，碰到这些文件/目录名就停止向上一级目录递归
+let g:gutentags_project_root = ['.root', '.svn', '.git', '.hg', '.project']
+
+" 所生成的数据文件的名称
+let g:gutentags_ctags_tagfile = '.tags'
+
+" 将自动生成的 tags 文件全部放入 ~/.cache/tags 目录中，避免污染工程目录
+let s:vim_tags = expand('~/.cache/tags')
+let g:gutentags_cache_dir = s:vim_tags
+
+" 配置 ctags 的参数
+let g:gutentags_ctags_extra_args = ['--fields=+niazS', '--extra=+q']
+let g:gutentags_ctags_extra_args += ['--c++-kinds=+px']
+let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
+
+" 检测 ~/.cache/tags 不存在就新建
+if !isdirectory(s:vim_tags)
+   silent! call mkdir(s:vim_tags, 'p')
+endif
+"gutentags的设定
+"
+
+"ale的设定
+let g:airline#extensions#ale#enabled = 1
+let g:ale_sign_column_always = 1
+"let g:ale_linters_explicit = 1
+let g:ale_completion_delay = 500
+let g:ale_echo_delay = 20
+let g:ale_lint_delay = 500
+let g:ale_echo_msg_format = '[%linter%] %code: %%s'
+"
+"let g:ale_lint_on_text_changed = 'normal'
+"let g:ale_lint_on_insert_leave = 1
+"o
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_enter = 0
+
+let g:ale_c_gcc_options = '-Wall -O2 -std=c99'
+let g:ale_cpp_gcc_options = '-Wall -O2 -std=c++14'
+"let g:ale_c_cppcheck_options = ''
+"let g:ale_cpp_cppcheck_options = ''
+"let g:ale_sign_error = "\ue009\ue009"
+"hi! clear SpellBad
+"hi! clear SpellCap
+"hi! clear SpellRare
+"hi! SpellBad gui=undercurl guisp=red
+"hi! SpellCap gui=undercurl guisp=blue
+"hi! SpellRare gui=undercurl guisp=magenta
+"ale的设定
